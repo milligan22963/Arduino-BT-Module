@@ -238,7 +238,7 @@ void loop()
       Serial.println("Initializing device...");
       digitalWrite(BT_CONNECTED_STATUS_PIN, LOW); // turn off when not connected
   
-      g_pBTModule->begin(BT_COMM_SPEED, false, "ArduinoBT", BT_PIN_CODE); // do we need to block on this?
+      g_pBTModule->begin(BT_COMM_SPEED, true, "ArduinoBT", BT_PIN_CODE); // do we need to block on this?
       
       g_connectionState = RestoreDeviceAddress;
     }
