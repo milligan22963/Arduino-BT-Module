@@ -200,8 +200,8 @@ bool BTModule::discoverDevice(bool block)
             strncpy(m_remoteDeviceAddress, pResponseStart, addressSize);
             m_remoteDeviceAddress[addressSize] = 0;
 
-			Serial.print("Remote device addr: ");
-			Serial.println(m_remoteDeviceAddress);            
+//			Serial.print("Remote device addr: ");
+//			Serial.println(m_remoteDeviceAddress);            
             foundDevice = true;
 
             /* We can stop inquring now */
@@ -327,13 +327,11 @@ bool BTModule::moduleReady(int statusWanted, bool block)
         
         if (statusValue == statusWanted)
         {
-        	Serial.println("Good status.");
           success = true;
           break;
         }
         else
         {
-          Serial.println("Bad status.");
           m_bufferIndex = 0;
           break;
         }
@@ -352,14 +350,32 @@ bool BTModule::moduleReady(int statusWanted, bool block)
   return success;
 }
 
+bool BTModule::sendByte(char dataValue)
+{
+	m_pBTModule->print(dataValue);
+	
+	return true;
+}
+
+bool BTModule::readByte(char *dataValue)
+{
+	bool success = false;
+	
+	if (m_pBTModule->available())
+	{
+		*dataValue = m_pBTModule->read();
+		success = true;
+	}
+	
+	return success;
+}
+
 bool BTModule::sendSerialData(char *pData)
 {
 	bool success = false;
 	
 	if (pData != NULL)
 	{
-		Serial.print("Sending command: ");
-		Serial.println(pData);
 		m_pBTModule->flush();
 		m_pBTModule->print(pData);
 		success = true;
@@ -375,6 +391,7 @@ bool BTModule::getSerialData(char *pData, char termCharacter)
 	if (pData != NULL)
 	{
 		int bufferIndex = 0;
+		int attempts = 0;
 		
 		while (success == false)
 		{
@@ -398,6 +415,12 @@ bool BTModule::getSerialData(char *pData, char termCharacter)
 			else
 			{
 				delay(50);
+				
+				attempts++;
+				if (attempts > 1000)
+				{
+					break;
+				}
 			}
 		}
 	}

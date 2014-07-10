@@ -65,6 +65,9 @@ class BTModule
 	    
 	    bool discoverDevice(bool block);
 	    bool connectToDevice(char *pDeviceName = NULL, bool block = true); // if no device name, it will use m_remoteDeviceAddress
+		bool sendByte(char dataValue);
+		bool readByte(char *dataValue);
+
 	    bool sendSerialData(char *pData);
 	    bool getSerialData(char *pData, char termCharacter);
 	    
